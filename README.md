@@ -186,7 +186,7 @@ Follow these steps:
 4.	Edit row with `EVENT_ID IN ('1114362', '2031680', '2752513')` which corresponds with ‘asset download’ events
 5.	Set IS_ENABLED_EXTERNAL = 'Y'
 
-![Update mm.EVENT_CTXTS table](images/0040-update-EVENT_CTXTS-table.png)
+![Update mm.EVENT_CTXTS table](images/0050-update-EVENT_CTXTS-table.png)
 
 ```sql 
 UPDATE [mm].[EVENT_CTXTS]
