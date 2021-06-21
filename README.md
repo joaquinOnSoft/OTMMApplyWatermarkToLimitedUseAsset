@@ -122,19 +122,32 @@ In order to manage the number of downloads of each asset said in the video you m
 
 ![New Field Group](images/0020-new-field-group.png)
 
-## Edit Model: Time Based Asset Properties (CUSTOM.MODEL.STOCK VIDEO)		
+## Create a Model: Time Based Asset Properties (CUSTOM.MODEL.STOCK VIDEO)		
 
 1. Browse to **Metadata > Metadata editor** at the top menu
 2. Click on **Models** at the left menu
-3. Click on **Edit** link close to **Time Based Asset Properties (CUSTOM.MODEL.STOCK VIDEO)**
-4. Search **Profanity** field 
-5. Select **Profanity** field 
-6. Click on **Add selected** button  
-7. Click on **Save** button
+3. Click on **New** button
+4. Create a new Model called 
+   * **Id**: RVFD.MODEL.PRODUCT_IMG
+   * **Name**: RVFD Product Image
+   * **Object Type**: ASSET
+4. Search **RVFD Product Ext. Info** field 
+5. Click on **Add selected** button  
+6. Repeat steps 4 and 5 for these fields:
+   * Asset Info
+   * TAg
+   * Media Analysis
+   * PIM details
+   * Marketing details
+   * Embeded Description
+   * Embedded IPTC
+   * Objects
+   * Rights & Permissions
+   * Intelligent Crop
+   * Worflow Audit Information
+6. Click on **Save** button
 
-![Edit Model](images/0030-edit-model.png)
-
-> NOTE: You can add the Field Group to all the Models that require this information
+![Edit Model](images/0030-create-model.png)
 
 ## Validate and apply changes		
 
