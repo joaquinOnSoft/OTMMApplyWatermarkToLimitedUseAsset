@@ -202,7 +202,7 @@ GO
 4. Click on **Next**
 5. Select only **src** folder at **Select the resource to export** list
 6. Check **Select class files an resource**
-7. Set **Select the export destination: JAR file**: **OTMM-condition-evaluation.jar**
+7. Set **Select the export destination: JAR file**: **OTMMApplyWatermarkToLimitedUseAsset20.2.jar**
 6. Click on **Finish**
 
 # Required .jar files
