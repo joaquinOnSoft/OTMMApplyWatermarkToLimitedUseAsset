@@ -1,31 +1,32 @@
 # OpenText Media Management (OTMM) Apply watermark to limited use asset
 OTMM Event listener which listen the events:
 
-	| EVENT_ID      | DESCR                  |
-	| ------------- | ---------------------- |
-	| 1114362       | LAUNCH_DOWNLOAD        |
-	| 2031680       | EXPORT_LAUNCH_DOWNLOAD |
-	| 2752513       | FTP DOWNLOAD           |
+| EVENT_ID      | DESCR                  |
+| ------------- | ---------------------- |
+| 1114362       | LAUNCH_DOWNLOAD        |
+| 2031680       | EXPORT_LAUNCH_DOWNLOAD |
+| 2752513       | FTP DOWNLOAD           |
 	
 This event is launched once the user downloads an asset.  
 
-This add-on increases the download counter `RVFD.FIELD.NUM_DOWNLOADS`, once the maximum number of downloads is achieved ´RVFD.FIELD.NUM_MAX_DOWNLOADS´ the asset is watermarked (an the original asset is stored as version).
+This add-on increases the download counter `RVFD.FIELD.NUM_DOWNLOADS`, once the maximum number of downloads is achieved `RVFD.FIELD.NUM_MAX_DOWNLOADS` the asset is watermarked (an the original asset is stored as version).
 
 These metadata are stored in these custom fields: 
 
 ```
- * **RVFD.FIELD.NUM_DOWNLOADS**
- * **RVFD.FIELD.NUM_MAX_DOWNLOADS**
+   - RVFD.FIELD.NUM_DOWNLOADS
+   - RVFD.FIELD.NUM_MAX_DOWNLOADS
 ```
 
 > NOTE: These custom field must be created from TEAMS administration panel.
 
 # Event handler registration
+
 ## Register event listener
 1.	Copy this paragraph:
 ```xml 
 
-<!-- Custom event listener (Profanity detection) -->
+<!-- Custom event listener (Apply watermark to limited use asset) -->
 <listener>
 	<listener-class>com.opentext.otmm.sc.eventlistener.ApplyWatermarkToLimitedUseAsset</listener-class>
 </listener>
@@ -70,18 +71,20 @@ Follow these steps:
 
 # Media Management Administration
 
-In order to store the bad words said in the video you must create some metadata.
+In order to manage the number of downloads of each asset said in the video you must create some metadata.
 
-## Create a Tabular Metadata table: PROFANITY_VIDEO_TAB
+## Create a Tabular Metadata table: RVFD_PRODUCT
 
 1. Access to TEAMS (<OTMM_SERVER>/teams)
 2. Browse to **Metadata > Custom table editor** at the top menu
 3. Click on **Tabular Metadata tables** at the left menu
 4. Click on **New Tabular Metadata table** button
-5. Create a new table called: **PROFANITY_VIDEO_TAB**
+5. Create a new table called: **RVFD_PRODUCT**
 6. Add two new fields:
-   * BAD_WORD (CHARACTER)
-   * START_TIME (CHARACTER)
+   * RVFD_FIELD_BRAND (CHARACTER - 2000)
+   * RVFD_FIELD_PRODUCT_TYPE (CHARACTER - 2000)
+   * RVFD_FIELD_NUM_DOWNLOADS (NUMBER - 38)
+   * RVFD_FIELD_NUM_MAX_DOWNLOADS (NUMBER - 38)
 7. Click on **Save** button
       
 ![New tabular metadata table](images/0000-new-tabular-metadata-table.png)
@@ -89,19 +92,19 @@ In order to store the bad words said in the video you must create some metadata.
 ## Create a Tabular Field: CUSTOM.TABLE.MEDIA ANALYSIS.PROFANITY	
 
 1. Browse to **Metadata > Metadata editor** at the top menu
-2. Click on **Tabular Fields** at the left menu
-3. Click on **New Tabular Field** button
-4. Create a new tabular field called: **CUSTOM.TABLE.MEDIA ANALYSIS.PROFANITY**
-   * **Id**:	CUSTOM.TABLE.MEDIA ANALYSIS.PROFANITY
-   * **Name**:	Profanity
-   * **Database Table**: PROFANITY_VIDEO_TAB
-Tabular Fields
-5. Add two new fields:
-   * CUSTOM.FIELD.MEDIAANALYSIS.VIDEO.SPEECH.PROFANITY.BAD_WORD
-   * CUSTOM.FIELD.MEDIAANALYSIS.VIDEO.SPEECH.PROFANITY.START.TIME
-6. Click on **Save** button
-      
-![New tabular Field](images/0010-new-tabular-field.png)
+2. Click on **Fields** at the left menu
+3. Click on **New  Field** button
+4. Create a new field called: **RVFD.FIELD.NUM_DOWNLOADS**
+   * **Id**:	RVFD.FIELD.NUM_DOWNLOADS
+   * **Name**:	RVFD Num Download
+   * **Database Table**: RVFD_PRODUCT
+   * **Data Type**: NUMBER
+   * **Data Length**: 38
+   * **Edit Type**:	SIMPLE
+5. Click on **Save** button
+6. Add a new fields (repeat steps 3 to 5) **RVFD.FIELD.NUM_MAX_DOWNLOADS**
+     
+![New tabular Field](images/0010-new-field.png)
 
 ## Create a Field Group: CUSTOM.CATEGORY.MEDIA ANALYSIS VIDEO.PROFANITY		
 
