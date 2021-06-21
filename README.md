@@ -157,6 +157,26 @@ Once we have created all the metadata you must deploy your changes in your OTMM 
 2. Click on **Validate** button at the bottom of the screen 
 3. Click on **Apply** button at the bottom of the screen
 
+## Create a Property template
+
+1. Browse to **Metadata > Property templates** at the top menu
+2. Click on **New property template** button
+3. Click on **New** button
+4. Create a Property template: 
+   * Info tab
+      * **Id**: RVFD Product Image
+   * Properties tab     
+      * **Model**:   RVFD Product Image  
+      * **RVFD Num Download**: 0
+      * **RVFD Maximum number of download**: 3   
+   * Security tab
+      * Check `RVFD Read only` 
+   * User groups
+      * Allowed User Groups: Everyone
+5. Click on **Save**
+
+![Edit Model](images/0040-property-template.png)
+
 # SQL Server Management Studio
 
 Follow these steps:
