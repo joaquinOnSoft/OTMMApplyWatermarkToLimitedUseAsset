@@ -89,7 +89,7 @@ In order to manage the number of downloads of each asset said in the video you m
       
 ![New tabular metadata table](images/0000-new-tabular-metadata-table.png)
 
-## Create a Tabular Field: CUSTOM.TABLE.MEDIA ANALYSIS.PROFANITY	
+## Create two Fields: RVFD.FIELD.NUM_DOWNLOADS and RVFD.FIELD.NUM_MAX_DOWNLOADS
 
 1. Browse to **Metadata > Metadata editor** at the top menu
 2. Click on **Fields** at the left menu
@@ -102,21 +102,21 @@ In order to manage the number of downloads of each asset said in the video you m
    * **Data Length**: 38
    * **Edit Type**:	SIMPLE
 5. Click on **Save** button
-6. Add a new fields (repeat steps 3 to 5) **RVFD.FIELD.NUM_MAX_DOWNLOADS**
+6. Add a new field **RVFD.FIELD.NUM_MAX_DOWNLOADS** (repeat steps 3 to 5)
      
 ![New tabular Field](images/0010-new-field.png)
 
-## Create a Field Group: CUSTOM.CATEGORY.MEDIA ANALYSIS VIDEO.PROFANITY		
+## Create a Field Group: RVF.PRODUCT.EXT.INFO		
 
 1. Browse to **Metadata > Metadata editor** at the top menu
 2. Click on **Field Groups** at the left menu
 3. Click on **New Field Group** button
-4. Create a new tabular Field group called: **CUSTOM.CATEGORY.MEDIA ANALYSIS VIDEO.PROFANITY**
-   * **Id**:	CUSTOM.CATEGORY.MEDIA ANALYSIS VIDEO.PROFANITY
-   * **Name**:	Profanity
+4. Create a new tabular Field group called: **RVF.PRODUCT.EXT.INFO**
+   * **Id**:	RVFD.PRODUCT.EXT.INFO
+   * **Name**:	RVFD Product Ext. Info
 5. Click on **Available Tabular Fields** tab
-6. Search **Profanity** field
-7. Select **Profanity** field 
+6. Search **RVFD** field
+7. Select **RVFD.FIELD.NUM_DOWNLOADS** and **RVFD.FIELD.NUM_MAX_DOWNLOADS** fields 
 8. Click on **Add selected** button   
 9. Click on **Save** button
 
