@@ -96,7 +96,7 @@ public class ManageAssetHelper {
 		AssetContentLoadRequest contentRequest = new AssetContentLoadRequest();
 		// deliver the content file to this directory - 
 		// NOTE: this path must be accessible to the content service
-		contentRequest.setDestinationDirectory(new File("c:\\temp")); //TODO avoid hardcoded path
+		contentRequest.setDestinationDirectory(new File("C:\\Apps\\MediaManagement\\data\\download")); //TODO avoid hardcoded path
 		// load the master content file
 		contentRequest.setLoadMasterContent(true);
 		// request the content as a file
