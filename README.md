@@ -1,14 +1,16 @@
 # OpenText Media Management (OTMM) Apply watermark to limited use asset
 OTMM Event listener which listen the events:
 
-| EVENT_ID      | DESCR                  | PUBLICATION_KEY              |
-| ------------- | ---------------------- | ---------------------------- |
+| EVENT_ID      | DESCR                  | PUBLICATION_KEY              | 
+| ------------- | ---------------------- | ---------------------------- | 
+| 60006         | Asset Exported         | TEAMS.EXPORT                 | 
+| 1114361       | Asset Exported         | TEAMS.EXPORT                 |
 | 1114362       | LAUNCH_DOWNLOAD        | TEAMS.LAUNCH_DOWNLOAD        |
 | 2031680       | EXPORT_LAUNCH_DOWNLOAD | TEAMS.EXPORT_LAUNCH_DOWNLOAD |
 | 2752513       | FTP DOWNLOAD           | TEAMS.DOWNLOAD               |
-| 60006         | Asset Exported         | TEAMS.EXPORT                 |
-| 1114361       | Asset Exported         | TEAMS.EXPORT                 |
 	
+> NOTE: 60006 TEAMS.EXPORT Event is launched when you click on Download menu option
+
 This event is launched once the user downloads an asset.  
 
 This add-on increases the download counter `RVFD.FIELD.NUM_DOWNLOADS`, once the maximum number of downloads is achieved `RVFD.FIELD.NUM_MAX_DOWNLOADS` the asset is watermarked (an the original asset is stored as version).
