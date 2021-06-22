@@ -21,8 +21,11 @@ package com.opentext.otmm.sc.eventlistener.handler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.artesia.asset.Asset;
 import com.artesia.asset.AssetIdentifier;
 import com.artesia.asset.metadata.services.AssetMetadataServices;
+import com.artesia.asset.services.AssetDataLoadRequest;
+import com.artesia.asset.services.AssetServices;
 import com.artesia.common.exception.BaseTeamsException;
 import com.artesia.entity.TeamsIdentifier;
 import com.artesia.event.Event;
@@ -65,13 +68,19 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 					numDownloadsField.setValue(new MetadataValue(++numDownloadsInt));		
 					
 					// Increasing number of downloads counter
-					MetadataField[] metadataFields = new MetadataField[] {numDownloadsField};										
-					MetadataHelper.saveMetadataForAsset(assetId, metadataFields);
+					MetadataField[] metadataFields = new MetadataField[] {numDownloadsField};
 					
+					MetadataHelper.lockAsset(assetId);
+					MetadataHelper.saveMetadataForAsset(assetId, metadataFields);
+					MetadataHelper.unlockAsset(assetId);
+										
 					// Check if we have achieved  the maximum number of downloads
 					if (numDownloadsInt == numMaxDownloadsInt) {
 						log.info("Maximum number of download achieved (" + numMaxDownloadsInt + ")");
 						log.info("Adding watermark to the asset...");
+						
+						Asset asset = retrieveAsset(assetId);
+						log.info("Asset path: " + asset.getMasterContentInfo().getFile());
 					}
 				}				
 			}
@@ -97,10 +106,34 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 		try {
 			assetMetadataCol = AssetMetadataServices.getInstance().retrieveMetadataForAsset(assetId, fieldIds, session);
 		} catch (BaseTeamsException e) {
-			log.error("Error retrieving metadata", e);
+			log.error("Error retrieving asset metadata: ", e);
 		}
 
 		return assetMetadataCol;
 	}	
+	
+	/**
+	 * 
+	 * @param assetId - Asset indetifier
+	 * @return
+	 * @see Media_Management_Programmer_Guide_20.2/programmers-guide/section_RetrieveAssets.html
+	 */
+	private Asset retrieveAsset(AssetIdentifier assetId) {
+        AssetDataLoadRequest dataRequest = new AssetDataLoadRequest();
+        dataRequest.setLoadAssetContentInfo(true);
+        dataRequest.setLoadPath(true);
 
+        SecuritySession session = SecurityHelper.getAdminSession();
+        
+        // Load a single asset
+        Asset asset = null;
+        
+		try {
+			asset = AssetServices.getInstance().retrieveAsset(assetId, dataRequest, session);
+		} catch (BaseTeamsException e) {
+			log.error("Error retrieving asset data: ", e);
+		}
+        
+        return asset;
+	}
 }

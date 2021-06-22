@@ -1,13 +1,9 @@
 # OpenText Media Management (OTMM) Apply watermark to limited use asset
-OTMM Event listener which listen the events:
+OTMM Event listener which listen the event:
 
 | EVENT_ID      | DESCR                  | PUBLICATION_KEY              | 
 | ------------- | ---------------------- | ---------------------------- | 
 | 60006         | Asset Exported         | TEAMS.EXPORT                 | 
-| 1114361       | Asset Exported         | TEAMS.EXPORT                 |
-| 1114362       | LAUNCH_DOWNLOAD        | TEAMS.LAUNCH_DOWNLOAD        |
-| 2031680       | EXPORT_LAUNCH_DOWNLOAD | TEAMS.EXPORT_LAUNCH_DOWNLOAD |
-| 2752513       | FTP DOWNLOAD           | TEAMS.DOWNLOAD               |
 	
 > NOTE: 60006 TEAMS.EXPORT Event is launched when you click on Download menu option
 

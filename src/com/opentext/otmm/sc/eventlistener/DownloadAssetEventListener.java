@@ -37,11 +37,7 @@ public class DownloadAssetEventListener extends AbstractEventLister {
 	public void onEvent(Event event) {
 		displayEventObject(event);
 		
-		if (event.getEventId().equals(new TeamsIdentifier(OTMMEvent.ASSET_EXPORTED)) ||
-				event.getEventId().equals(new TeamsIdentifier(OTMMEvent.ENDING_JOB_EXPORT)) ||
-				event.getEventId().equals(new TeamsIdentifier(OTMMEvent.EXPORT_LAUNCH_DOWNLOAD)) ||
-				event.getEventId().equals(new TeamsIdentifier(OTMMEvent.FTP_DOWNLOAD)) ||
-				event.getEventId().equals(new TeamsIdentifier(OTMMEvent.LAUNCH_DOWNLOAD))) {
+		if (event.getEventId().equals(new TeamsIdentifier(OTMMEvent.ASSET_EXPORTED))) {
 			log.info("Ids match for 'download asset' event. Event Id: " + event.getEventId());
 			
 			OTMMEventHandler handler = new ApplyWatermarkToLimitedUseAssetOnDownload();
