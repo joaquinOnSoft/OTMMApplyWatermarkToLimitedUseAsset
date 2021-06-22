@@ -107,8 +107,7 @@ public class ManageAssetHelper {
 			info = AssetContentServices.getInstance().retrieveAssetContent(
 					assetId, contentRequest, null, securitySession);
 		} catch (BaseTeamsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Get master file: ", e);
 		}
 
 		if(info != null) {
