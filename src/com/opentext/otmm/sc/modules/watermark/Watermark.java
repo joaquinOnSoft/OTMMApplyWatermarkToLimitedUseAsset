@@ -21,7 +21,10 @@ public class Watermark {
 	 * @see https://legacy.imagemagick.org/discourse-server/viewtopic.php?t=19177
 	 */
 	public File apply(File input, String text) {
+		File watermarkedImg = null;
+		
 		log.debug("Watermark input file path: " + input.getAbsolutePath());
+		
 		try {
 			String inputPath = input.getAbsolutePath();
 			String outputFileName = getRandomName(getFileExtension(inputPath));
@@ -31,7 +34,8 @@ public class Watermark {
 			// 
 			// C:\Apps\DMTS\ImageMagick\magick.exe  image.jpg -pointsize 50 -font Arial -fill rgba\(0,0,0,0.4\) -gravity center -annotate +0+0 "# downloads exceeded" image_2.jpg
 
-			File watermarkedImg = new File(System.getProperty("user.dir"), outputFileName);
+			// TODO Generate the watermarked asset in the repository folder, not in the working directory.
+			watermarkedImg = new File(System.getProperty("user.dir"), outputFileName);
 			String watermarkCommand = "C:\\Apps\\DMTS\\ImageMagick\\magick.exe " + inputPath
 					+ " -pointsize 50 -font Arial -fill rgba\\(0,0,0,0.4\\) -gravity center -annotate +0+0 \"" + text 
 					+ "\" " + watermarkedImg.getAbsolutePath();
@@ -40,18 +44,20 @@ public class Watermark {
 			ProcessBuilder processBuilder = new ProcessBuilder();
 			processBuilder.command("cmd.exe", "/c", watermarkCommand);
 			Process process = processBuilder.start();
-
+			log.info("Watermarking process exit value: " + process.exitValue());
+			/*
 			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
 			String line;
 			while ((line = reader.readLine()) != null) {
 				log.debug(line);
 			}
+			*/							
 		} catch (Exception e) {
 			log.error("Adding watermark: ", e);
 		}
 		
-		return null;
+		return watermarkedImg;
 	}
 	
 	private String getFileExtension(String filename) {

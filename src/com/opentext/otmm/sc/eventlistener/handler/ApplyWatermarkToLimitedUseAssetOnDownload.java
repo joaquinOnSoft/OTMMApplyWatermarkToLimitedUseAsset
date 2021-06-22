@@ -29,6 +29,9 @@ import com.artesia.asset.metadata.services.AssetMetadataServices;
 import com.artesia.asset.services.AssetDataLoadRequest;
 import com.artesia.asset.services.AssetServices;
 import com.artesia.common.exception.BaseTeamsException;
+import com.artesia.content.ContentConstants;
+import com.artesia.content.ContentInfo;
+import com.artesia.content.RenditionContentInfo;
 import com.artesia.entity.TeamsIdentifier;
 import com.artesia.event.Event;
 import com.artesia.metadata.MetadataCollection;
@@ -43,7 +46,7 @@ import com.opentext.otmm.sc.modules.watermark.Watermark;
 public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandler {
 
 	private static final String OTMM_BASE_PATH = "C:\\Apps\\MediaManagement\\";
-	
+
 	private static final Log log = LogFactory.getLog(ApplyWatermarkToLimitedUseAssetOnDownload.class);
 
 	@Override
@@ -52,46 +55,62 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 
 		String assetIdStr = event.getObjectId();		
 		log.debug("Asset ID (String version): " + assetIdStr);
-		
+
 		if(assetIdStr != null) {
 			AssetIdentifier assetId = new AssetIdentifier(assetIdStr);
 			MetadataCollection assetMetadataCol = retrieveMetadataForAsset(assetId);
 
 			if(assetMetadataCol != null) {
 				log.debug("Asset Metadata (size): " + assetMetadataCol.size());
-				
+
 				//Recovering Custom metadata 				
 				MetadataField numDownloadsField = (MetadataField) assetMetadataCol.findElementById(new TeamsIdentifier(OTMMField.RVFD_FIELD_NUM_DOWNLOADS));
 				MetadataField numMaxDownloadsField = (MetadataField) assetMetadataCol.findElementById(new TeamsIdentifier(OTMMField.RVFD_FIELD_NUM_MAX_DOWNLOADS));
 				if(numDownloadsField != null && numMaxDownloadsField != null) {
 					log.debug(">>> Number Downloads: " + numDownloadsField.getValue().getIntValue());
 					log.debug(">>> Max number Downloads: " + numMaxDownloadsField.getValue().getIntValue());
-					
+
 					int numDownloadsInt = numDownloadsField.getValue().getIntValue();
 					int numMaxDownloadsInt = numMaxDownloadsField.getValue().getIntValue();
-										
+
 					numDownloadsField.setValue(new MetadataValue(++numDownloadsInt));		
-					
+
 					// Increasing number of downloads counter
 					MetadataField[] metadataFields = new MetadataField[] {numDownloadsField};
-					
+
 					MetadataHelper.lockAsset(assetId);
 					MetadataHelper.saveMetadataForAsset(assetId, metadataFields);
 					MetadataHelper.unlockAsset(assetId);
-										
+
 					// Check if we have achieved  the maximum number of downloads
 					if (numDownloadsInt == numMaxDownloadsInt) {
 						log.info("Maximum number of download achieved (" + numMaxDownloadsInt + ")");
 						log.info("Adding watermark to the asset...");
-						
+
 						Asset asset = retrieveAsset(assetId);	
 						String path = OTMM_BASE_PATH + asset.getMasterContentInfo().getContentPath();
 						log.info("Asset path: " + path);	
-						
+
+						//Generating watermark
 						Watermark wMark = new Watermark();
-						wMark.apply(new File(path), "# downloads exceeded");
+						File wImage = wMark.apply(new File(path), "# downloads exceeded");
 						
-						log.debug("Watermak added!");							
+						log.debug("Watermak added to a new image");	
+
+						if(wImage != null) {
+							RenditionContentInfo rendInfo = asset.getRenditionContent();
+							if (rendInfo == null) {
+								rendInfo = new RenditionContentInfo();
+								asset.setRenditionContent(rendInfo);
+							}
+						}
+						
+						log.debug("Rendition Content Info recovered");
+						ContentInfo watermarkedContentInfo = new ContentInfo(wImage);
+						watermarkedContentInfo.setContentManagerId(new TeamsIdentifier("ARTESIA.CONTENT.FILESYSTEM"));
+						watermarkedContentInfo.setContentKind(ContentConstants.CONTENT_KIND_MASTER);
+																							
+						log.debug("Watermak added (as master)!");							
 					}
 				}				
 			}
@@ -102,7 +121,7 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 
 		return handled;
 	}
-	
+
 	private MetadataCollection retrieveMetadataForAsset(AssetIdentifier assetId) {
 		log.debug("Asset Id: " + assetId.getId());
 
@@ -122,7 +141,7 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 
 		return assetMetadataCol;
 	}	
-	
+
 	/**
 	 * 
 	 * @param assetId - Asset indetifier
@@ -130,23 +149,23 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 	 * @see Media_Management_Programmer_Guide_20.2/programmers-guide/section_RetrieveAssets.html
 	 */
 	private Asset retrieveAsset(AssetIdentifier assetId) {
-        AssetDataLoadRequest dataRequest = new AssetDataLoadRequest();
-        dataRequest.setLoadAssetContentInfo(true);
-        dataRequest.setLoadPath(true);
-        dataRequest.setLoadMacResourceInfo(true);
-        dataRequest.setLoadDestinationLinks(true);
-        
-        SecuritySession session = SecurityHelper.getAdminSession();
-        
-        // Load a single asset
-        Asset asset = null;
-        
+		AssetDataLoadRequest dataRequest = new AssetDataLoadRequest();
+		dataRequest.setLoadAssetContentInfo(true);
+		dataRequest.setLoadPath(true);
+		dataRequest.setLoadMacResourceInfo(true);
+		dataRequest.setLoadDestinationLinks(true);
+
+		SecuritySession session = SecurityHelper.getAdminSession();
+
+		// Load a single asset
+		Asset asset = null;
+
 		try {
 			asset = AssetServices.getInstance().retrieveAsset(assetId, dataRequest, session);
 		} catch (BaseTeamsException e) {
 			log.error("Error retrieving asset data: ", e);
 		}
-        
-        return asset;
+
+		return asset;
 	}
 }
