@@ -25,7 +25,7 @@ public interface OTMMEvent {
 	 * <strong>PUBLICATION_KEY</strong>: TEAMS.LAUNCH_DOWNLOAD
 	 * <strong>MESSAGE</strong>: Download directory:
 	 */
-	public static final String LAUNCH_DOWNLOAD = "LAUNCH_DOWNLOAD";
+	public static final String LAUNCH_DOWNLOAD = "1114362";
 
 	/**
 	 * <strong>EVENT_ID</strong>: 2031680	
@@ -42,4 +42,20 @@ public interface OTMMEvent {
 	 * <strong>MESSAGE</strong>: Request for downloading file out of the repository
 	 */
 	public static final String FTP_DOWNLOAD = "2752513";
+		
+	/**
+	 * <strong>EVENT_ID</strong>: 60006	
+	 * <strong>DESCR</strong>: Asset Exported	
+	 * <strong>PUBLICATION_KEY</strong>: TEAMS.EXPORT
+	 * <strong>MESSAGE</strong>: An Asset was exported
+	 */
+	public static final String ASSET_EXPORTED = "60006";
+	
+	/**
+	 * <strong>EVENT_ID</strong>: 1114361	
+	 * <strong>DESCR</strong>: Asset Exported	
+	 * <strong>PUBLICATION_KEY</strong>: TEAMS.EXPORT
+	 * <strong>MESSAGE</strong>: Ending export job
+	 */
+	public static final String ENDING_JOB_EXPORT = "1114361";	
 }

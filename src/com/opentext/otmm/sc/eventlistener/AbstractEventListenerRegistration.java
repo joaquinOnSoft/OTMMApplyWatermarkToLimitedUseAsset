@@ -26,7 +26,7 @@ public abstract class AbstractEventListenerRegistration implements ServletContex
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
-		log.info(">>> " + getClassName() + " >> contextDestroyed() Start >>>");
+		log.info(">>> >> contextDestroyed() Start >>>");
 		
 		try {
 			SecuritySession session = EventListenerUtils.getLocalSession(USER_ALIAS_TSUPER);
@@ -35,11 +35,6 @@ public abstract class AbstractEventListenerRegistration implements ServletContex
 			log.error("An exception occured while destroying the servlet context", e);
 		}
 		
-		log.info("<<< " + getClassName() + " >> contextDestroyed() End <<<");		
-	}
-
-	protected String getClassName() {
-		return getClass().getName();
-	}
-
+		log.info("<<< >> contextDestroyed() End <<<");		
+	}	
 }

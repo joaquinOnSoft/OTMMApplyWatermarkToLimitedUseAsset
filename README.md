@@ -1,11 +1,13 @@
 # OpenText Media Management (OTMM) Apply watermark to limited use asset
 OTMM Event listener which listen the events:
 
-| EVENT_ID      | DESCR                  |
-| ------------- | ---------------------- |
-| 1114362       | LAUNCH_DOWNLOAD        |
-| 2031680       | EXPORT_LAUNCH_DOWNLOAD |
-| 2752513       | FTP DOWNLOAD           |
+| EVENT_ID      | DESCR                  | PUBLICATION_KEY              |
+| ------------- | ---------------------- | ---------------------------- |
+| 1114362       | LAUNCH_DOWNLOAD        | TEAMS.LAUNCH_DOWNLOAD        |
+| 2031680       | EXPORT_LAUNCH_DOWNLOAD | TEAMS.EXPORT_LAUNCH_DOWNLOAD |
+| 2752513       | FTP DOWNLOAD           | TEAMS.DOWNLOAD               |
+| 60006         | Asset Exported         | TEAMS.EXPORT                 |
+| 1114361       | Asset Exported         | TEAMS.EXPORT                 |
 	
 This event is launched once the user downloads an asset.  
 
@@ -219,7 +221,7 @@ Follow these steps:
 ```sql 
 UPDATE [mm].[EVENT_CTXTS]
    SET [IS_ENABLED_EXTERNAL] = 'Y'
-   WHERE EVENT_ID IN ('1114362', '2031680', '2752513')
+   WHERE EVENT_ID IN ('1114362', '2031680', '2752513', '1114361', '60006')
 GO
 ```
 
