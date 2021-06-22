@@ -97,16 +97,6 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 						File watermarkedImagFile = wMark.apply(new File(path), "# downloads exceeded");
 						
 						log.debug("Watermak added to a new image");	
-
-						if(watermarkedImagFile != null) {
-							RenditionContentInfo rendInfo = asset.getRenditionContent();
-							if (rendInfo == null) {
-								rendInfo = new RenditionContentInfo();
-								asset.setRenditionContent(rendInfo);
-							}
-						}
-						
-						log.debug("Rendition Content Info recovered");
 						
 						ManageAssetHelper.checkout(asset.getAssetId());
 						ManageAssetHelper.checkin(asset.getAssetId(), watermarkedImagFile);

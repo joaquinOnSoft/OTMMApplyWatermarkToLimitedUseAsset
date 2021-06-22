@@ -31,7 +31,6 @@ import com.opentext.job.JobContext;
 import com.opentext.job.JobParameter;
 import com.opentext.job.JobRequest;
 import com.opentext.job.services.JobServices;
-import com.opentext.otmm.sc.eventlistener.handler.ApplyWatermarkToLimitedUseAssetOnDownload;
 
 /**
  * <strong>Checking assets in and out</strong>
@@ -50,6 +49,7 @@ import com.opentext.otmm.sc.eventlistener.handler.ApplyWatermarkToLimitedUseAsse
  * asset; therefore, the programmer does not need to perform any additional
  * actions on the checked-out asset after a successful check-in.
  *
+ * @see Media_Management_Programmer_Guide_20.2/programmers-guide/section_CheckInAndOut.html
  */
 public class ManageAssetHelper {
 
@@ -60,7 +60,8 @@ public class ManageAssetHelper {
 	 * to check-out the content. In order to check-out an asset, you need to lock it
 	 * first.
 	 */
-	public static void checkout(AssetIdentifier assetId) {
+	public static boolean checkout(AssetIdentifier assetId) {
+		boolean checkedout = true;
 		SecuritySession securitySession = SecurityHelper.getAdminSession();
 
 		try {
@@ -70,7 +71,10 @@ public class ManageAssetHelper {
 			AssetServices.getInstance().checkoutAsset(assetId, securitySession);
 		} catch (BaseTeamsException e) {
 			log.error("Checkout: ", e);
+			checkedout = false;
 		}
+		
+		return checkedout = true;;
 	}
 
 	/**
@@ -81,7 +85,11 @@ public class ManageAssetHelper {
 	 * @param asset
 	 * @param editedFile
 	 */
-	public static void checkin(AssetIdentifier checkedOutAssetId, File editedFile) {
+	public static boolean checkin(AssetIdentifier checkedOutAssetId, File editedFile) {
+		boolean checkedin = true;
+		
+		log.info("chechin (START): " + editedFile.getAbsolutePath());
+		
 		try {
 			SecuritySession session = SecurityHelper.getAdminSession();
 
@@ -90,11 +98,14 @@ public class ManageAssetHelper {
 			newAssetVersion.setCheckinAssetId(checkedOutAssetId);
 			// Set the new content
 			newAssetVersion.getAsset().setMasterContentInfo(new ContentInfo(editedFile));
+			log.debug("\t Import asset created");
 
 			ImportJob checkinJob = AssetImportServices.getInstance().createImportJob(session);
 			checkinJob.addImportAsset(newAssetVersion);
-
+			log.debug("\t Import job created");
+						
 			// submit the import
+			log.debug("\t Submit the import");	
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put(JobConstants.IMPORT_JOB, checkinJob);
 
@@ -102,12 +113,13 @@ public class ManageAssetHelper {
 			jobContext.setData(data);
 
 			// Constructing job request
+			log.debug("\t Constructing job request");			
 			JobRequest jobRequest = new JobRequest();
 			jobRequest.setJobId(checkinJob.getImportJobId().asLong());
 			jobRequest.setInitiatorLoginId(session.getLoginName());
 			jobRequest.setJobContext(jobContext);
 			jobRequest.setJobClass(JobClass.IMPORT);
-			jobRequest.setJobName("Asset Import Example");
+			jobRequest.setJobName("Asset Import (checkin)");
 
 			PrefData prefData = SystemServices.getInstance()
 					.retrieveSystemSettingsByPrefDataId(new PrefDataId(SystemSettingConstants.JOB,
@@ -126,6 +138,7 @@ public class ManageAssetHelper {
 			jobRequest.setJobType(jobType);
 
 			// Creating job parameters
+			log.debug("\t Creating job parameters");			
 			List<JobParameter> jobParameters = new ArrayList<JobParameter>();
 			JobParameter jobParameter = new JobParameter();
 			jobParameter.setKey(JobConstants.IMPORT_JOB_ID);
@@ -138,8 +151,12 @@ public class ManageAssetHelper {
 			jobRequest.setJobParameters(jobParameters);
 
 			// Initiating a job with job request
+			log.debug("\tInitiating a job with job request");			
+
 			JobServices jobServices = JobServices.getInstance();
 			Long jobId = jobServices.initiateJob(jobRequest, session);
+			
+			log.debug("\t Job initialized: " + jobId);			
 
 			ManagedDirectoryServices mds = ManagedDirectoryServices.getInstance();
 			ManagedDirectory managedDirectory = mds.retrieveManagedDirectoryByJobId(checkinJob.getImportJobId().asLong(),
@@ -148,6 +165,11 @@ public class ManageAssetHelper {
 			mds.updateManagedDirectory(managedDirectory, session);
 		} catch (BaseTeamsException e) {
 			log.error("Checkin: ", e);
+			checkedin = false;
 		}
+		
+		log.info("chechin (END)");
+		
+		return checkedin;
 	}
 }
