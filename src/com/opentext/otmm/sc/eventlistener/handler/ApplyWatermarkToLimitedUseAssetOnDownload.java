@@ -28,8 +28,10 @@ import com.artesia.entity.TeamsIdentifier;
 import com.artesia.event.Event;
 import com.artesia.metadata.MetadataCollection;
 import com.artesia.metadata.MetadataField;
+import com.artesia.metadata.MetadataValue;
 import com.artesia.security.SecuritySession;
 import com.opentext.otmm.sc.eventlistener.OTMMField;
+import com.opentext.otmm.sc.eventlistener.helper.MetadataHelper;
 import com.opentext.otmm.sc.eventlistener.helper.SecurityHelper;
 
 public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandler {
@@ -55,7 +57,22 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 				MetadataField numMaxDownloadsField = (MetadataField) assetMetadataCol.findElementById(new TeamsIdentifier(OTMMField.RVFD_FIELD_NUM_MAX_DOWNLOADS));
 				if(numDownloadsField != null && numMaxDownloadsField != null) {
 					log.debug(">>> Number Downloads: " + numDownloadsField.getValue().getIntValue());
-					log.debug(">>> Max number Downloads: " + numMaxDownloadsField.getValue().getIntValue());						
+					log.debug(">>> Max number Downloads: " + numMaxDownloadsField.getValue().getIntValue());
+					
+					int numDownloadsInt = numDownloadsField.getValue().getIntValue();
+					int numMaxDownloadsInt = numMaxDownloadsField.getValue().getIntValue();
+										
+					numDownloadsField.setValue(new MetadataValue(++numDownloadsInt));		
+					
+					// Increasing number of downloads counter
+					MetadataField[] metadataFields = new MetadataField[] {numDownloadsField};										
+					MetadataHelper.saveMetadataForAsset(assetId, metadataFields);
+					
+					// Check if we have achieved  the maximum number of downloads
+					if (numDownloadsInt == numMaxDownloadsInt) {
+						log.info("Maximum number of download achieved (" + numMaxDownloadsInt + ")");
+						log.info("Adding watermark to the asset...");
+					}
 				}				
 			}
 		}
