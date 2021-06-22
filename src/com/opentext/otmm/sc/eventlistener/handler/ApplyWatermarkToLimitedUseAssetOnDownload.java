@@ -81,6 +81,9 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 						
 						Asset asset = retrieveAsset(assetId);
 						log.info("Asset path: " + asset.getMasterContentInfo().getFile());
+						log.info("Asset path: " + asset.getMasterContentInfo().getContentPath());
+						log.info("Asset path: " + asset.getPathList());
+
 					}
 				}				
 			}
@@ -122,7 +125,9 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
         AssetDataLoadRequest dataRequest = new AssetDataLoadRequest();
         dataRequest.setLoadAssetContentInfo(true);
         dataRequest.setLoadPath(true);
-
+        dataRequest.setLoadMacResourceInfo(true);
+        dataRequest.setLoadDestinationLinks(true);
+        
         SecuritySession session = SecurityHelper.getAdminSession();
         
         // Load a single asset
