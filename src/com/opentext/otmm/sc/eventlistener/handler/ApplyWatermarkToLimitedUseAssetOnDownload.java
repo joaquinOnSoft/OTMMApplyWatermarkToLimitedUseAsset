@@ -39,6 +39,7 @@ import com.artesia.metadata.MetadataField;
 import com.artesia.metadata.MetadataValue;
 import com.artesia.security.SecuritySession;
 import com.opentext.otmm.sc.eventlistener.OTMMField;
+import com.opentext.otmm.sc.eventlistener.helper.ManageAssetHelper;
 import com.opentext.otmm.sc.eventlistener.helper.MetadataHelper;
 import com.opentext.otmm.sc.eventlistener.helper.SecurityHelper;
 import com.opentext.otmm.sc.modules.watermark.Watermark;
@@ -93,11 +94,11 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 
 						//Generating watermark
 						Watermark wMark = new Watermark();
-						File wImage = wMark.apply(new File(path), "# downloads exceeded");
+						File watermarkedImagFile = wMark.apply(new File(path), "# downloads exceeded");
 						
 						log.debug("Watermak added to a new image");	
 
-						if(wImage != null) {
+						if(watermarkedImagFile != null) {
 							RenditionContentInfo rendInfo = asset.getRenditionContent();
 							if (rendInfo == null) {
 								rendInfo = new RenditionContentInfo();
@@ -106,10 +107,10 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 						}
 						
 						log.debug("Rendition Content Info recovered");
-						ContentInfo watermarkedContentInfo = new ContentInfo(wImage);
-						watermarkedContentInfo.setContentManagerId(new TeamsIdentifier("ARTESIA.CONTENT.FILESYSTEM"));
-						watermarkedContentInfo.setContentKind(ContentConstants.CONTENT_KIND_MASTER);
-																							
+						
+						ManageAssetHelper.checkout(asset.getAssetId());
+						ManageAssetHelper.checkin(asset.getAssetId(), watermarkedImagFile);
+												
 						log.debug("Watermak added (as master)!");							
 					}
 				}				

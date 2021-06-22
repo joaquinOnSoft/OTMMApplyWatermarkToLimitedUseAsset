@@ -1,8 +1,6 @@
 package com.opentext.otmm.sc.modules.watermark;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
 import java.util.Random;
 
 import org.apache.commons.logging.Log;
@@ -44,15 +42,13 @@ public class Watermark {
 			ProcessBuilder processBuilder = new ProcessBuilder();
 			processBuilder.command("cmd.exe", "/c", watermarkCommand);
 			Process process = processBuilder.start();
-			log.info("Watermarking process exit value: " + process.exitValue());
 			/*
 			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
 			String line;
 			while ((line = reader.readLine()) != null) {
 				log.debug(line);
-			}
-			*/							
+			}*/
 		} catch (Exception e) {
 			log.error("Adding watermark: ", e);
 		}
