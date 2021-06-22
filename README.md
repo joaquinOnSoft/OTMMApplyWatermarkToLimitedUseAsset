@@ -35,9 +35,33 @@ These metadata are stored in these custom fields:
 2.	Open **web.xml** file located at **C:\Apps\MediaManagement\ear\artesia\otmmux\WEB-INF**
 3.	Paste the paragraph under the **web-app** label
 
-## Deploy event listener classes
+## Deploy event listener 
+
+### Option 1: Deploy event listener classes
 1.	Copy the folder structure under the **&lt;PROJECT_HOME&gt;\bin**
 2.	Paste the **com** folder under **C:\Apps\MediaManagement\ear\artesia\otmmux\WEB-INF\classes**
+3. Restart the **OpenText Media Manager** Windows **service**.
+ 
+ ![Restart OpenText Media Manager services](images/0070-restart-otmm-service.png)
+
+### Option 2: Deploy the event listener JAR file
+ 1. Copy the jar file, e.g. `OTMMApplyWatermarkToLimitedUseAsset20.2.jar`, in the `plugin` directory of your OTMM instance.
+```
+ C:\OpenText\MediaManagement\plugins\OTMMIMDbTransformer-20.4.jar
+``` 
+ 2. As administrator open a DOS window and navigate to
+```
+ c:\Apps\MediaManagement\install\ant
+``` 
+ 3. Enter the following command: **ant deploy-customizations**, make sure
+there’s no errors and that the build is successful.
+
+ ![ant deploy-customizations](images/0060-ant-deploy-customizations.png)
+
+ 4. Restart the **OpenText Media Manager** Windows **service**.
+ 
+ ![Restart OpenText Media Manager services](images/0070-restart-otmm-service.png)
+
 
 ## log4j.xml
 
