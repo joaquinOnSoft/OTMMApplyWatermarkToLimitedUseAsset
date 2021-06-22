@@ -249,3 +249,6 @@ Import the indicated set of files to the indicated project folders:
 1. From: **C:\Apps\MediaManagement\ear\artesia\**
  - artesia-ejb.jar
 2. To project folder: **lib**
+
+# Versions
+1. **Initial version**, released on June 2021 - Compatible with OTMM 21.2 
