@@ -18,6 +18,8 @@
  */
 package com.opentext.otmm.sc.eventlistener.handler;
 
+import java.io.File;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -36,9 +38,12 @@ import com.artesia.security.SecuritySession;
 import com.opentext.otmm.sc.eventlistener.OTMMField;
 import com.opentext.otmm.sc.eventlistener.helper.MetadataHelper;
 import com.opentext.otmm.sc.eventlistener.helper.SecurityHelper;
+import com.opentext.otmm.sc.modules.watermark.Watermark;
 
 public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandler {
 
+	private static final String OTMM_BASE_PATH = "C:\\Apps\\MediaManagement\\";
+	
 	private static final Log log = LogFactory.getLog(ApplyWatermarkToLimitedUseAssetOnDownload.class);
 
 	@Override
@@ -79,11 +84,12 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 						log.info("Maximum number of download achieved (" + numMaxDownloadsInt + ")");
 						log.info("Adding watermark to the asset...");
 						
-						Asset asset = retrieveAsset(assetId);
-						log.info("Asset path: " + asset.getMasterContentInfo().getFile());
-						log.info("Asset path: " + asset.getMasterContentInfo().getContentPath());
-						log.info("Asset path: " + asset.getPathList());
-
+						Asset asset = retrieveAsset(assetId);	
+						String path = OTMM_BASE_PATH + asset.getMasterContentInfo().getContentPath();
+						log.info("Asset path: " + path);	
+						
+						Watermark wMark = new Watermark();
+						wMark.apply(new File(path), "# downloads exceeded");
 					}
 				}				
 			}
