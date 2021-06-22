@@ -17,9 +17,9 @@ import com.opentext.otmm.sc.eventlistener.OTMMField;
 import com.opentext.otmm.sc.eventlistener.helper.JobHelper;
 import com.opentext.otmm.sc.eventlistener.helper.SecurityHelper;
 
-public class ApplyWatermarkToLimitedUseAsset implements OTMMEventHandler {
+public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandler {
 
-	private static final Log log = LogFactory.getLog(ApplyWatermarkToLimitedUseAsset.class);
+	private static final Log log = LogFactory.getLog(ApplyWatermarkToLimitedUseAssetOnDownload.class);
 
 	@Override
 	public boolean handle(Event event) {

@@ -28,7 +28,7 @@ These metadata are stored in these custom fields:
 
 <!-- Custom event listener (Apply watermark to limited use asset) -->
 <listener>
-	<listener-class>com.opentext.otmm.sc.eventlistener.ApplyWatermarkToLimitedUseAsset</listener-class>
+	<listener-class>com.opentext.otmm.sc.eventlistener.DownloadAssetEventListenerRegistration</listener-class>
 </listener>
 ```
  
