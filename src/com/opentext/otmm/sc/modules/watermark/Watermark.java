@@ -33,7 +33,7 @@ public class Watermark {
 			// C:\Apps\DMTS\ImageMagick\magick.exe  image.jpg -pointsize 50 -font Arial -fill rgba\(0,0,0,0.4\) -gravity center -annotate +0+0 "# downloads exceeded" image_2.jpg
 
 			// TODO Generate the watermarked asset in the repository folder, not in the working directory.
-			watermarkedImg = new File(System.getProperty("user.dir"), outputFileName);
+			watermarkedImg = new File("c:\\temp", outputFileName);
 			String watermarkCommand = "C:\\Apps\\DMTS\\ImageMagick\\magick.exe " + inputPath
 					+ " -pointsize 50 -font Arial -fill rgba\\(0,0,0,0.4\\) -gravity center -annotate +0+0 \"" + text 
 					+ "\" " + watermarkedImg.getAbsolutePath();
@@ -41,7 +41,7 @@ public class Watermark {
 
 			ProcessBuilder processBuilder = new ProcessBuilder();
 			processBuilder.command("cmd.exe", "/c", watermarkCommand);
-			Process process = processBuilder.start();
+			processBuilder.start();
 			/*
 			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 

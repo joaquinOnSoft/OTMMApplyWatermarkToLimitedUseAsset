@@ -10,7 +10,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.artesia.asset.Asset;
+import com.artesia.asset.AssetContentInfo;
 import com.artesia.asset.AssetIdentifier;
+import com.artesia.asset.content.services.AssetContentLoadRequest;
+import com.artesia.asset.content.services.AssetContentServices;
 import com.artesia.asset.imprt.ImportAsset;
 import com.artesia.asset.imprt.ImportJob;
 import com.artesia.asset.imprt.services.AssetImportServices;
@@ -18,6 +21,7 @@ import com.artesia.asset.services.AssetServices;
 import com.artesia.common.exception.BaseTeamsException;
 import com.artesia.common.prefs.PrefData;
 import com.artesia.common.prefs.PrefDataId;
+import com.artesia.content.ContentData.ContentDataSource;
 import com.artesia.content.ContentInfo;
 import com.artesia.manageddirectory.ManagedDirectory;
 import com.artesia.manageddirectory.services.ManagedDirectoryServices;
@@ -73,9 +77,47 @@ public class ManageAssetHelper {
 			log.error("Checkout: ", e);
 			checkedout = false;
 		}
-		
-		return checkedout = true;;
+
+		return checkedout;
 	}
+
+	/**
+	 * <strong>Get the Content</strong>
+	 * The next step is typically to get the content for editing. In the following example, we use AssetContentServices to get the asset's content.
+	 * @param assetId
+	 * @return
+	 */
+	public static File getMasterFile(AssetIdentifier assetId) {
+		File masterFile = null;
+		
+		SecuritySession securitySession = SecurityHelper.getAdminSession();
+
+		// Set up a request object that will tell the service where we want the content delivered.
+		AssetContentLoadRequest contentRequest = new AssetContentLoadRequest();
+		// deliver the content file to this directory - 
+		// NOTE: this path must be accessible to the content service
+		contentRequest.setDestinationDirectory(new File("c:\\temp")); //TODO avoid hardcoded path
+		// load the master content file
+		contentRequest.setLoadMasterContent(true);
+		// request the content as a file
+		contentRequest.setRequestedFormat(ContentDataSource.FILE);
+
+		AssetContentInfo info = null;
+		try {
+			info = AssetContentServices.getInstance().retrieveAssetContent(
+					assetId, contentRequest, null, securitySession);
+		} catch (BaseTeamsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		if(info != null) {
+			masterFile = info.getMasterContent().getFile();
+		}
+		
+		return masterFile;		
+	}
+
 
 	/**
 	 * <strong>Check-in the New Content</strong> The final step is to check-in the
@@ -87,9 +129,9 @@ public class ManageAssetHelper {
 	 */
 	public static boolean checkin(AssetIdentifier checkedOutAssetId, File editedFile) {
 		boolean checkedin = true;
-		
+
 		log.info("chechin (START): " + editedFile.getAbsolutePath());
-		
+
 		try {
 			SecuritySession session = SecurityHelper.getAdminSession();
 
@@ -103,7 +145,7 @@ public class ManageAssetHelper {
 			ImportJob checkinJob = AssetImportServices.getInstance().createImportJob(session);
 			checkinJob.addImportAsset(newAssetVersion);
 			log.debug("\t Import job created");
-						
+
 			// submit the import
 			log.debug("\t Submit the import");	
 			Map<String, Object> data = new HashMap<String, Object>();
@@ -155,21 +197,21 @@ public class ManageAssetHelper {
 
 			JobServices jobServices = JobServices.getInstance();
 			Long jobId = jobServices.initiateJob(jobRequest, session);
-			
+
 			log.debug("\t Job initialized: " + jobId);			
 
 			ManagedDirectoryServices mds = ManagedDirectoryServices.getInstance();
-			ManagedDirectory managedDirectory = mds.retrieveManagedDirectoryByJobId(checkinJob.getImportJobId().asLong(),
-					session);
+			ManagedDirectory managedDirectory = 
+					mds.retrieveManagedDirectoryByJobId(checkinJob.getImportJobId().asLong(), session);
 			managedDirectory.setContentStaged(true);
 			mds.updateManagedDirectory(managedDirectory, session);
 		} catch (BaseTeamsException e) {
 			log.error("Checkin: ", e);
 			checkedin = false;
 		}
-		
+
 		log.info("chechin (END)");
-		
+
 		return checkedin;
 	}
 }

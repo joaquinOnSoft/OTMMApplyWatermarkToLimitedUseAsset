@@ -29,9 +29,6 @@ import com.artesia.asset.metadata.services.AssetMetadataServices;
 import com.artesia.asset.services.AssetDataLoadRequest;
 import com.artesia.asset.services.AssetServices;
 import com.artesia.common.exception.BaseTeamsException;
-import com.artesia.content.ContentConstants;
-import com.artesia.content.ContentInfo;
-import com.artesia.content.RenditionContentInfo;
 import com.artesia.entity.TeamsIdentifier;
 import com.artesia.event.Event;
 import com.artesia.metadata.MetadataCollection;
@@ -45,8 +42,6 @@ import com.opentext.otmm.sc.eventlistener.helper.SecurityHelper;
 import com.opentext.otmm.sc.modules.watermark.Watermark;
 
 public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandler {
-
-	private static final String OTMM_BASE_PATH = "C:\\Apps\\MediaManagement\\";
 
 	private static final Log log = LogFactory.getLog(ApplyWatermarkToLimitedUseAssetOnDownload.class);
 
@@ -87,19 +82,17 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 					if (numDownloadsInt == numMaxDownloadsInt) {
 						log.info("Maximum number of download achieved (" + numMaxDownloadsInt + ")");
 						log.info("Adding watermark to the asset...");
-
-						Asset asset = retrieveAsset(assetId);	
-						String path = OTMM_BASE_PATH + asset.getMasterContentInfo().getContentPath();
-						log.info("Asset path: " + path);	
+										
+						ManageAssetHelper.checkout(assetId);
+						
+						File masterFile = ManageAssetHelper.getMasterFile(assetId);
 
 						//Generating watermark
 						Watermark wMark = new Watermark();
-						File watermarkedImagFile = wMark.apply(new File(path), "# downloads exceeded");
+						File editedFile = wMark.apply(masterFile, "# downloads exceeded");
+						log.debug("Watermak added to a new image");
 						
-						log.debug("Watermak added to a new image");	
-						
-						ManageAssetHelper.checkout(asset.getAssetId());
-						ManageAssetHelper.checkin(asset.getAssetId(), watermarkedImagFile);
+						ManageAssetHelper.checkin(assetId, editedFile);
 												
 						log.debug("Watermak added (as master)!");							
 					}
