@@ -38,9 +38,13 @@ These metadata are stored in these custom fields:
 ## Deploy event listener 
 
 ### Option 1: Deploy event listener classes
-1.	Copy the folder structure under the **&lt;PROJECT_HOME&gt;\bin**
-2.	Paste the **com** folder under **C:\Apps\MediaManagement\ear\artesia\otmmux\WEB-INF\classes**
-3. Restart the **OpenText Media Manager** Windows **service**.
+1.	Open **Services** Desktop App
+2.	Select **OpenText MediaManagement Service**
+3.	Right click on **OpenText MediaManagement Service**
+4.	Select **Stop** in order to stop the service
+5.	Copy the folder structure under the **&lt;PROJECT_HOME&gt;\bin**
+6.	Paste the **com** folder under **C:\Apps\MediaManagement\ear\artesia\otmmux\WEB-INF\classes**
+7.	Restart  **OpenText MediaManagement Service** from **Services** Desktop App
  
  ![Restart OpenText Media Manager services](images/0070-restart-otmm-service.png)
 
