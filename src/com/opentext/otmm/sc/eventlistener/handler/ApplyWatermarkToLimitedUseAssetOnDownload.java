@@ -11,6 +11,7 @@ import com.artesia.common.exception.BaseTeamsException;
 import com.artesia.entity.TeamsIdentifier;
 import com.artesia.event.Event;
 import com.artesia.metadata.MetadataCollection;
+import com.artesia.metadata.MetadataField;
 import com.artesia.security.SecuritySession;
 import com.opentext.job.Job;
 import com.opentext.otmm.sc.eventlistener.OTMMField;
@@ -25,18 +26,23 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 	public boolean handle(Event event) {
 		boolean handled = false;
 
-		Job job = JobHelper.retrieveJob(event.getObjectId());
-		List<AssetIdentifier> assetIds =job.getAssetIds();
-
-		log.debug(assetIds);
-
-		if(assetIds != null && assetIds.size() > 0) {
-			AssetIdentifier assetId = assetIds.get(0);
-
+		String assetIdStr = event.getObjectId();		
+		log.debug("Asset ID (String version): " + assetIdStr);
+		
+		if(assetIdStr != null) {
+			AssetIdentifier assetId = new AssetIdentifier(assetIdStr);
 			MetadataCollection assetMetadataCol = retrieveMetadataForAsset(assetId);
 
 			if(assetMetadataCol != null) {
 				log.debug("Asset Metadata (size): " + assetMetadataCol.size());
+				
+				//Recovering Custom metadata 				
+				MetadataField numDownloadsField = (MetadataField) assetMetadataCol.findElementById(new TeamsIdentifier(OTMMField.RVFD_FIELD_NUM_DOWNLOADS));
+				MetadataField numMaxDownloadsField = (MetadataField) assetMetadataCol.findElementById(new TeamsIdentifier(OTMMField.RVFD_FIELD_NUM_MAX_DOWNLOADS));
+				if(numDownloadsField != null && numMaxDownloadsField != null) {
+					log.debug(">>> Number Downloads: " + numDownloadsField.getValue().getIntValue());
+					log.debug(">>> Max number Downloads: " + numMaxDownloadsField.getValue().getIntValue());						
+				}				
 			}
 		}
 		else {
