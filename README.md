@@ -93,6 +93,15 @@ Follow these steps:
 	<AppenderRef ref="CONSOLE"/>
 	<AppenderRef ref="FILE"/>
 </Logger>	
+<Logger name="com.opentext.otmm.sc.modules" level="DEBUG" additivity="false">
+	<AppenderRef ref="CONSOLE"/>
+	<AppenderRef ref="FILE"/>
+</Logger>	
+<Logger name="com.opentext.otmm.sc.modules.watermark" level="DEBUG" additivity="false">
+	<AppenderRef ref="CONSOLE"/>
+	<AppenderRef ref="FILE"/>
+</Logger>	
+
 ```
 
 2.	Paste the paragraph after the **&lt;/Loggers&gt;** label into **C:\Apps\MediaManagement_TomEE\conf\log4j2.xml**

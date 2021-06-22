@@ -90,6 +90,8 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 						
 						Watermark wMark = new Watermark();
 						wMark.apply(new File(path), "# downloads exceeded");
+						
+						log.debug("Watermak added!");							
 					}
 				}				
 			}
