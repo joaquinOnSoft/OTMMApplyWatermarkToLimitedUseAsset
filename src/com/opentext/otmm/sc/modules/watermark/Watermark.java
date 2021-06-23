@@ -1,12 +1,14 @@
 package com.opentext.otmm.sc.modules.watermark;
 
 import java.io.File;
+import java.util.Random;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class Watermark {
-
+	private static final String DOWNLOADS_BASE_PATH = "C:\\Apps\\MediaManagement\\data\\download";
+	
 	protected static final Log log = LogFactory.getLog(Watermark.class);
 
 	/**
@@ -24,7 +26,7 @@ public class Watermark {
 		
 		try {
 			String inputPath = input.getAbsolutePath();
-			String outputFileName = input.getName(); //getRandomName(getFileExtension(inputPath));
+			String outputFileName = getRandomName(getFileExtension(inputPath)); //input.getName(); 
 			
 			// Lets add a watermark to the original image 
 			// Command will look like:
@@ -32,7 +34,7 @@ public class Watermark {
 			// C:\Apps\DMTS\ImageMagick\magick.exe  image.jpg -pointsize 50 -font Arial -fill rgba\(0,0,0,0.4\) -gravity center -annotate +0+0 "# downloads exceeded" image_2.jpg
 
 			// TODO Generate the watermarked asset in the repository folder, not in the working directory.
-			watermarkedImg = new File("c:\\temp\\watermark", outputFileName);
+			watermarkedImg = new File(DOWNLOADS_BASE_PATH, outputFileName);
 			String watermarkCommand = "C:\\Apps\\DMTS\\ImageMagick\\magick.exe " + inputPath
 					+ " -colorspace RGB -pointsize 50 -font Arial -fill rgba\\(0,0,0,0.4\\) -gravity center -annotate +0+0 \"" + text 
 					+ "\" " + watermarkedImg.getAbsolutePath();
@@ -48,4 +50,20 @@ public class Watermark {
 		
 		return watermarkedImg;
 	}
+	
+	private String getFileExtension(String filename) {
+		return filename != null?  filename.substring(filename.lastIndexOf(".") + 1) : null;
+	}
+	
+	private String getRandomName(String extension) {
+		Random rand = new Random(System.currentTimeMillis());
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append(System.currentTimeMillis())
+			.append(rand.nextInt((99999 - 10000) + 1) + 10000)
+			.append(".")
+			.append(extension);
+		
+		return builder.toString();
+	}	
 }

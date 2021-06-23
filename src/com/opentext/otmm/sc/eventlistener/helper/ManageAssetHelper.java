@@ -57,6 +57,8 @@ import com.opentext.job.services.JobServices;
  */
 public class ManageAssetHelper {
 
+	private static final String DOWNLOADS_BASE_PATH = "C:\\Apps\\MediaManagement\\data\\download";
+	
 	private static final Log log = LogFactory.getLog(ManageAssetHelper.class);
 
 	/**
@@ -70,7 +72,7 @@ public class ManageAssetHelper {
 
 		try {
 			// We need to lock the asset first
-			AssetServices.getInstance().lockAsset(assetId, securitySession);
+			AssetServices.getInstance().lockAsset(assetId, securitySession);			
 			// Now check it out
 			AssetServices.getInstance().checkoutAsset(assetId, securitySession);
 		} catch (BaseTeamsException e) {
@@ -96,7 +98,7 @@ public class ManageAssetHelper {
 		AssetContentLoadRequest contentRequest = new AssetContentLoadRequest();
 		// deliver the content file to this directory - 
 		// NOTE: this path must be accessible to the content service
-		contentRequest.setDestinationDirectory(new File("C:\\Apps\\MediaManagement\\data\\download")); //TODO avoid hardcoded path
+		contentRequest.setDestinationDirectory(new File(DOWNLOADS_BASE_PATH)); //TODO avoid hardcoded path
 		// load the master content file
 		contentRequest.setLoadMasterContent(true);
 		// request the content as a file

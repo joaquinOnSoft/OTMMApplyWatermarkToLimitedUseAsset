@@ -23,11 +23,9 @@ import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.artesia.asset.Asset;
+
 import com.artesia.asset.AssetIdentifier;
 import com.artesia.asset.metadata.services.AssetMetadataServices;
-import com.artesia.asset.services.AssetDataLoadRequest;
-import com.artesia.asset.services.AssetServices;
 import com.artesia.common.exception.BaseTeamsException;
 import com.artesia.entity.TeamsIdentifier;
 import com.artesia.event.Event;
@@ -126,30 +124,4 @@ public class ApplyWatermarkToLimitedUseAssetOnDownload implements OTMMEventHandl
 		return assetMetadataCol;
 	}	
 
-	/**
-	 * 
-	 * @param assetId - Asset indetifier
-	 * @return
-	 * @see Media_Management_Programmer_Guide_20.2/programmers-guide/section_RetrieveAssets.html
-	 */
-	private Asset retrieveAsset(AssetIdentifier assetId) {
-		AssetDataLoadRequest dataRequest = new AssetDataLoadRequest();
-		dataRequest.setLoadAssetContentInfo(true);
-		dataRequest.setLoadPath(true);
-		dataRequest.setLoadMacResourceInfo(true);
-		dataRequest.setLoadDestinationLinks(true);
-
-		SecuritySession session = SecurityHelper.getAdminSession();
-
-		// Load a single asset
-		Asset asset = null;
-
-		try {
-			asset = AssetServices.getInstance().retrieveAsset(assetId, dataRequest, session);
-		} catch (BaseTeamsException e) {
-			log.error("Error retrieving asset data: ", e);
-		}
-
-		return asset;
-	}
 }
